@@ -903,7 +903,7 @@ body {
     display: flex;
     gap: 1rem;
     justify-content: center;
-    flex-wrap: wrap;
+    align-items: center;
     margin: 1.5rem 0;
 }
 
@@ -920,7 +920,6 @@ body {
 .no-btn {
     background: linear-gradient(135deg, #666 0%, #888 100%);
     color: white;
-    position: absolute;
     transition: var(--transition-bounce);
     z-index: 100;
 }
@@ -1483,13 +1482,15 @@ body {
     }
     
     .button-container {
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
+        justify-content: center;
+        gap: 0.8rem;
     }
     
     .button-container .btn {
-        width: 100%;
-        max-width: 250px;
+        padding: 12px 20px;
+        font-size: 0.85rem;
     }
     
     .carousel {
