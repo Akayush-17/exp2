@@ -134,47 +134,61 @@ function initRunawayButton() {
 function runAway(e) {
     e.preventDefault();
     const noBtn = document.getElementById('noBtn');
-    const page = document.getElementById('page3');
+    const page3 = document.getElementById('page3');
+
+    // Move button out of scroll-paper to page3 directly so it isn't clipped by overflow:hidden / transforms
+    if (noBtn.parentElement !== page3) {
+        page3.appendChild(noBtn);
+    }
 
     mpTrack('No Button Attempted');
     
-    // Get viewport dimensions with padding
-    const padding = 100;
+    // Get button dimensions
     const btnWidth = noBtn.offsetWidth;
     const btnHeight = noBtn.offsetHeight;
-    const maxX = window.innerWidth - btnWidth - padding;
-    const maxY = window.innerHeight - btnHeight - padding;
     
-    // Generate random position
-    let newX = Math.random() * maxX + padding / 2;
-    let newY = Math.random() * maxY + padding / 2;
+    // Safe margin from edges
+    const margin = 20;
+    const minX = margin;
+    const minY = margin;
+    const maxX = window.innerWidth - btnWidth - margin;
+    const maxY = window.innerHeight - btnHeight - margin;
     
-    // Make sure it's not too close to current position
+    // Generate random position clamped within viewport
+    let newX, newY;
     const currentRect = noBtn.getBoundingClientRect();
-    const minDistance = 150;
+    const minDistance = 120;
+    let attempts = 0;
     
-    while (Math.abs(newX - currentRect.left) < minDistance && 
-           Math.abs(newY - currentRect.top) < minDistance) {
-        newX = Math.random() * maxX + padding / 2;
-        newY = Math.random() * maxY + padding / 2;
-    }
+    do {
+        newX = Math.random() * (maxX - minX) + minX;
+        newY = Math.random() * (maxY - minY) + minY;
+        attempts++;
+    } while (
+        attempts < 20 &&
+        Math.abs(newX - currentRect.left) < minDistance && 
+        Math.abs(newY - currentRect.top) < minDistance
+    );
+    
+    // Clamp to ensure it stays fully within viewport
+    newX = Math.max(minX, Math.min(newX, maxX));
+    newY = Math.max(minY, Math.min(newY, maxY));
     
     // Apply new position
     noBtn.style.position = 'fixed';
     noBtn.style.left = `${newX}px`;
     noBtn.style.top = `${newY}px`;
-    noBtn.style.transform = `rotate(${Math.random() * 30 - 15}deg)`;
+    noBtn.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
+    noBtn.style.margin = '0';
     
     // Add playful messages
     const messages = [
-        "Nice try! 😏",
-        "Can't catch me!",
-        "Nope!",
-        "Not today!",
-        "Keep trying! 😂",
-        "Almost!",
-        "Too slow!",
-        "Really? 😜"
+        "Thak jaogi cutie! 😂",
+        "Mann Jao!",
+        "Nahi karna chahiye! 🤔",
+        "Itni jaldi? 😜",
+        "Hehe! 😏",
+        "Try again! 😂",
     ];
     
     noBtn.textContent = messages[Math.floor(Math.random() * messages.length)];
